@@ -1,43 +1,61 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
-import { getPendingPurchases, approvePurchase, getUsers, deleteUserAndData } from '../services/firebaseService';
+
+// Les imports de Firebase ne sont plus nécessaires :
 // import { getPendingPurchases, approvePurchase, getUsers, deleteUserAndData } from '../services/firebaseService';
-import { PendingPurchase, User } from '../types';
-import { CURRENCY_SYMBOL } from '../constants';
+
+// Les types sont conservés au cas où vous souhaiteriez réactiver l'interface
+// (Ils ne causeront pas d'erreur s'ils ne sont pas utilisés)
+import { PendingPurchase, User } from '../types'; 
+import { CURRENCY_SYMBOL } from '../constants'; // L'import de la constante est conservé
+
+// ---------------------------------------------------------------------------------------------------
+// Composant Principal
+// ---------------------------------------------------------------------------------------------------
 
 export default function AdminPage() {
     const [activeTab, setActiveTab] = useState('purchases');
 
-    return <div>Fonctionnalité admin désactivée (Firebase retiré).</div>;
+    // Affichage temporaire pour indiquer que l'interface est désactivée
+    return (
+        <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4">Administration</h1>
+            <div className="mb-4 border-b border-gray-200">
+                <nav className="-mb-px flex space-x-8">
+                    <button
+                        className={`py-2 px-4 border-b-2 font-medium text-sm ${
+                            activeTab === 'purchases' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                        onClick={() => setActiveTab('purchases')}
+                    >
+                        Achats en attente (Désactivé)
+                    </button>
+                    <button
+                        className={`py-2 px-4 border-b-2 font-medium text-sm ${
+                            activeTab === 'users' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                        onClick={() => setActiveTab('users')}
+                    >
+                        Utilisateurs (Désactivé)
+                    </button>
+                </nav>
+            </div>
+            {activeTab === 'purchases' && <PendingPurchasesTab />}
+            {activeTab === 'users' && <UsersTab />}
+            <p className="mt-6 text-red-500 font-semibold">
+                NOTE : Les fonctionnalités d'administration sont désactivées car les services Firebase ont été retirés.
+            </p>
+        </div>
+    );
 }
 
+// ---------------------------------------------------------------------------------------------------
+// Composant : Achats en attente (Désactivé)
+// ---------------------------------------------------------------------------------------------------
+
 const PendingPurchasesTab = () => {
-    const [purchases, setPurchases] = useState<PendingPurchase[]>([]);
-    const [loading, setLoading] = useState(true);
+    // Les états et gestionnaires asynchrones liés à Firebase sont supprimés.
     const [names, setNames] = useState<Record<string, { firstName: string, lastName: string }>>({});
 
-    const fetchPurchases = useCallback(async () => {
-        setLoading(true);
-        const data = await getPendingPurchases();
-        setPurchases(data);
-        setLoading(false);
-    }, []);
-
-    useEffect(() => {
-        fetchPurchases();
-    }, [fetchPurchases]);
-    
-    const handleApprove = async (purchase: PendingPurchase) => {
-        const name = names[purchase.id!];
-        if (!name || !name.firstName || !name.lastName) {
-            alert("Veuillez entrer le prénom et le nom de l'utilisateur.");
-            return;
-        }
-        await approvePurchase(purchase, name.firstName, name.lastName);
-        alert(`L'utilisateur ${name.firstName} ${name.lastName} a été créé.`);
-        fetchPurchases(); // Refresh list
-    };
-    
     const handleNameChange = (id: string, field: 'firstName' | 'lastName', value: string) => {
         setNames(prev => ({
             ...prev,
@@ -45,70 +63,22 @@ const PendingPurchasesTab = () => {
         }));
     };
 
-    if (loading) return <div>Chargement...</div>;
-
     return (
         <div className="bg-white p-6 rounded-lg shadow-md">
-            {purchases.length === 0 ? <p>Aucune commande en attente.</p> : (
-                <ul className="divide-y divide-gray-200">
-                    {purchases.map(p => (
-                        <li key={p.id} className="py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            <div>
-                                <p className="font-medium">Téléphone: {p.phone}</p>
-                                <p className="text-sm text-gray-500">{p.modules.length} module(s) - {p.totalPrice.toFixed(0)} {CURRENCY_SYMBOL}</p>
-                            </div>
-                             <div className="flex gap-2 items-center">
-                                <input type="text" placeholder="Prénom" onChange={(e) => handleNameChange(p.id!, 'firstName', e.target.value)} className="p-1 border rounded-md text-sm" />
-                                <input type="text" placeholder="Nom" onChange={(e) => handleNameChange(p.id!, 'lastName', e.target.value)} className="p-1 border rounded-md text-sm" />
-                                <button onClick={() => handleApprove(p)} className="px-3 py-1 bg-green-500 text-white text-sm rounded-md hover:bg-green-600">Approuver</button>
-                             </div>
-                        </li>
-                    ))}
-                </ul>
-            )}
+            <p>La liste des achats en attente n'est pas disponible (service Firebase retiré).</p>
         </div>
     );
 };
 
+// ---------------------------------------------------------------------------------------------------
+// Composant : Utilisateurs (Désactivé)
+// ---------------------------------------------------------------------------------------------------
+
 const UsersTab = () => {
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState(true);
-    
-    const fetchUsers = useCallback(async () => {
-        setLoading(true);
-        const data = await getUsers();
-        setUsers(data);
-        setLoading(false);
-    }, []);
-
-    useEffect(() => {
-        fetchUsers();
-    }, [fetchUsers]);
-    
-    const handleDelete = async (userId: string, name: string) => {
-        if (window.confirm(`Êtes-vous sûr de vouloir supprimer ${name} ? Cette action est irréversible.`)) {
-            await deleteUserAndData(userId);
-            alert("Utilisateur supprimé.");
-            fetchUsers();
-        }
-    }
-
-    if (loading) return <div>Chargement...</div>;
-
+    // Les états et gestionnaires asynchrones liés à Firebase sont supprimés.
     return (
         <div className="bg-white p-6 rounded-lg shadow-md">
-            {/* Search bar can be added here */}
-            <ul className="divide-y divide-gray-200">
-                {users.map(u => (
-                    <li key={u.uid} className="py-3 flex items-center justify-between">
-                        <div>
-                            <p className="font-medium">{u.firstName} {u.lastName}</p>
-                            <p className="text-sm text-gray-500">{u.phone}</p>
-                        </div>
-                        <button onClick={() => handleDelete(u.uid, `${u.firstName} ${u.lastName}`)} className="px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600">Supprimer</button>
-                    </li>
-                ))}
-            </ul>
+            <p>La liste des utilisateurs n'est pas disponible (service Firebase retiré).</p>
         </div>
     );
 };
