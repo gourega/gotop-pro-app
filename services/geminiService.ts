@@ -2,13 +2,16 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { TrainingModule } from '../types';
 
-const API_KEY = process.env.API_KEY;
+const API_KEY: string = import.meta.env.VITE_GEMINI_API_KEY!;
 
 if (!API_KEY) {
-  console.warn("Gemini API key not found. Please set the API_KEY environment variable.");
+    console.warn("Gemini API key not found. Please set the API_KEY.");
+    // Gérer le cas où la clé est réellement manquante si nécessaire
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const ai = new GoogleGenAI({
+  apiKey: API_KEY, // <--- Assurez-vous que c'est bien 'apiKey' en minuscule
+});
 
 const trainingPlanSchema = {
   type: Type.ARRAY,
@@ -80,8 +83,14 @@ export const generateTrainingPlan = async (topics: string[]): Promise<TrainingMo
         },
     });
 
-    const jsonString = response.text;
-    const generatedModules = JSON.parse(jsonString);
+    const jsonString = response.text; 
+
+// Ajoutez cette vérification avant le parse :
+if (!jsonString) {
+    throw new Error("Gemini returned an empty response text.");
+}
+
+const generatedModules = JSON.parse(jsonString); // Ceci devrait fonctionner
     
     // The response is already an array from the schema
     return generatedModules as TrainingModule[];

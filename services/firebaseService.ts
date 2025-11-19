@@ -32,13 +32,14 @@ import type { User as AppUser, PendingPurchase, TrainingModule } from '../types'
 
 // TODO: Remplacez ces valeurs par votre propre configuration Firebase.
 const firebaseConfig = {
-  apiKey: "VOTRE_API_KEY",
-  authDomain: "VOTRE_AUTH_DOMAIN",
-  projectId: "VOTRE_PROJECT_ID",
-  storageBucket: "VOTRE_STORAGE_BUCKET",
-  messagingSenderId: "VOTRE_MESSAGING_SENDER_ID",
-  appId: "VOTRE_APP_ID"
+  apiKey: "AIzaSyBY_pcF8fDl3f0VCnZ3qUl4AVsm7io910Q",
+  authDomain: "go-top-pro.firebaseapp.com",
+  projectId: "go-top-pro",
+  storageBucket: "go-top-pro.firebasestorage.app",
+  messagingSenderId: "533358276642",
+  appId: "1:533358276642:web:cf71be01f9f66b2f885a7b"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
