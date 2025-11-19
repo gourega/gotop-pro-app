@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { QUIZ_QUESTIONS, MODULE_PRICE, CURRENCY_SYMBOL } from '../constants';
 import { generateTrainingPlan } from '../services/geminiService';
-import { savePendingPurchase } from '../services/firebaseService';
+// import { savePendingPurchase } from '../services/firebaseService';
 import { TrainingModule } from '../types';
 
 const AnalysisAnimation = () => (
@@ -109,7 +109,7 @@ export default function QuizPage() {
             return;
         }
         const purchaseModules = modules.filter(m => selectedModules.includes(m.id));
-        await savePendingPurchase({ phone: phoneNumber, modules: purchaseModules, totalPrice });
+        // await savePendingPurchase({ phone: phoneNumber, modules: purchaseModules, totalPrice });
         setShowPaymentModal(false);
         const message = `Bonjour, je viens de valider ma fiche pour ${purchaseModules.length} module(s) Go'Top Pro pour un total de ${totalPrice.toFixed(0)} ${CURRENCY_SYMBOL}. Voici ma preuve de paiement.`;
         window.open(`https://wa.me/2250708070690?text=${encodeURIComponent(message)}`, '_blank');

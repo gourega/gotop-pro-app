@@ -1,29 +1,14 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { getPendingPurchases, approvePurchase, getUsers, deleteUserAndData } from '../services/firebaseService';
+// import { getPendingPurchases, approvePurchase, getUsers, deleteUserAndData } from '../services/firebaseService';
 import { PendingPurchase, User } from '../types';
 import { CURRENCY_SYMBOL } from '../constants';
 
 export default function AdminPage() {
     const [activeTab, setActiveTab] = useState('purchases');
 
-    return (
-        <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Tableau de bord Administrateur</h1>
-            
-            <div className="border-b border-gray-200 mb-8">
-                <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-                    <button onClick={() => setActiveTab('purchases')} className={`${activeTab === 'purchases' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}>Commandes en attente</button>
-                    <button onClick={() => setActiveTab('users')} className={`${activeTab === 'users' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}>Gestion des utilisateurs</button>
-                </nav>
-            </div>
-
-            <div>
-                {activeTab === 'purchases' && <PendingPurchasesTab />}
-                {activeTab === 'users' && <UsersTab />}
-            </div>
-        </div>
-    );
+    return <div>Fonctionnalité admin désactivée (Firebase retiré).</div>;
 }
 
 const PendingPurchasesTab = () => {

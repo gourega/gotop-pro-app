@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { RecaptchaVerifier, signInWithPhoneNumber, signInWithEmailAndPassword, auth } from '../services/firebaseService';
+// import { RecaptchaVerifier, signInWithPhoneNumber, signInWithEmailAndPassword, auth } from '../services/firebaseService';
 
 export default function AuthPage() {
     const navigate = useNavigate();
@@ -19,77 +19,7 @@ export default function AuthPage() {
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState('user');
 
-    useEffect(() => {
-        if (!window.recaptchaVerifier) {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                'size': 'invisible',
-                'callback': (response: any) => {
-                    // reCAPTCHA solved, allow signInWithPhoneNumber.
-                }
-            });
-        }
-    }, []);
-
-    const handlePhoneSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-        setIsSubmitting(true);
-        if (!window.recaptchaVerifier) {
-            setError("reCAPTCHA not initialized.");
-            setIsSubmitting(false);
-            return;
-        }
-        try {
-            const result = await signInWithPhoneNumber(auth, `+${phone.replace(/\D/g, '')}`, window.recaptchaVerifier);
-            setConfirmationResult(result);
-        } catch (err: any) {
-            setError(err.message);
-            // This might happen if the reCAPTCHA needs to be rendered.
-            // In a real app, you might need to show it.
-            window.recaptchaVerifier.render().then((widgetId: any) => {
-               window.recaptchaWidgetId = widgetId;
-            });
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const handleOtpSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-        setIsSubmitting(true);
-        if (!confirmationResult) {
-            setError('Please request an OTP first.');
-            setIsSubmitting(false);
-            return;
-        }
-        try {
-            await confirmationResult.confirm(otp);
-            navigate('/dashboard');
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    
-    const handleAdminSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-        setIsSubmitting(true);
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            if (userCredential.user.email === 'admin@gotop.pro') {
-                navigate('/admin');
-            } else {
-                setError('Accès non autorisé.');
-            }
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+    // TODO: Remplacer la logique d'authentification par une solution adaptée à Vercel
 
     return (
         <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">

@@ -1,38 +1,11 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { auth, getUserData, updateUserData, uploadProfilePicture, User as FirebaseUser } from '../services/firebaseService';
+// import { auth, getUserData, updateUserData, uploadProfilePicture, User as FirebaseUser } from '../services/firebaseService';
 import { User } from '../types';
 
 export default function DashboardPage() {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('modules');
-    
-    const fetchUser = useCallback(async () => {
-        if (auth.currentUser) {
-            const userData = await getUserData(auth.currentUser.uid);
-            if (userData) {
-                setUser(userData);
-            } else {
-                // Handle case where user exists in Auth but not Firestore
-                const newUser: User = { uid: auth.currentUser.uid, phone: auth.currentUser.phoneNumber! };
-                setUser(newUser);
-            }
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        fetchUser();
-    }, [fetchUser]);
-
-    if (loading) {
-        return <div>Chargement du tableau de bord...</div>
-    }
-
-    if (!user) {
-        return <div>Utilisateur non trouvé.</div>
-    }
+    // TODO: Remplacer la logique utilisateur par une source adaptée à Vercel
+    return <div>Fonctionnalité tableau de bord désactivée (Firebase retiré).</div>;
     
     return (
         <div className="container mx-auto p-4 sm:p-6 lg:p-8">
