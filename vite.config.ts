@@ -4,9 +4,10 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // Ajoutez cette ligne pour corriger le chemin des assets après le build
+  // Cette ligne corrige le problème de chemin 404 pour Vercel en utilisant le chemin racine
   base: '/', 
   build: {
-    chunkSizeWarningLimit: 1000 // (Optionnel: pour masquer l'avertissement)
+    // Ceci masque l'avertissement de taille de chunk vu précédemment (optionnel)
+    chunkSizeWarningLimit: 1000 
   }
 })
