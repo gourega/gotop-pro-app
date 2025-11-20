@@ -2,7 +2,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { TrainingModule } from '../types';
 
-const API_KEY: string = import.meta.env.VITE_GEMINI_API_KEY!;
+const API_KEY: string = (import.meta as any).env.VITE_GEMINI_API_KEY;
 
 if (!API_KEY) {
     console.warn("Gemini API key not found. Please set the API_KEY.");
