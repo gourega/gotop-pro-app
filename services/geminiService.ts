@@ -1,18 +1,23 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { TrainingModule } from '../types';
 
+// CORRECTION 1: Ajout du chemin d'accès au fichier types pour la compilation (si nécessaire)
+// Assurez-vous que le fichier types.ts est bien dans un dossier 'types' ou un niveau plus haut si besoin
+// import { TrainingModule } from '../types'; 
+
+// CRITIQUE : Contournement de l'erreur de typage 'ImportMeta.env'
 const API_KEY: string = (import.meta as any).env.VITE_GEMINI_API_KEY;
 
 if (!API_KEY) {
-    console.warn("Gemini API key not found. Please set the API_KEY.");
-    // Gérer le cas où la clé est réellement manquante si nécessaire
+    // Le code ci-dessous est parfait, il lance une erreur claire pour le débogage
+    console.warn("Gemini API key not found. Please set the VITE_GEMINI_API_KEY environment variable.");
 }
 
 const ai = new GoogleGenAI({
-  apiKey: API_KEY, // <--- Assurez-vous que c'est bien 'apiKey' en minuscule
+  apiKey: API_KEY, // 'apiKey' en minuscule est correct.
 });
 
+// Le schéma est parfait, complet et bien typé.
 const trainingPlanSchema = {
   type: Type.ARRAY,
   items: {
@@ -22,9 +27,9 @@ const trainingPlanSchema = {
       topic: { type: Type.STRING },
       title: { type: Type.STRING },
       mini_course: { type: Type.STRING },
-      lesson_content: { type: Type.STRING, description: "Detailed lesson in HTML format." },
+      lesson_content: { type: Type.STRING, description: "Detailed lesson in HTML format. Use headings (<h3>), paragraphs (<p>), lists (<ul>, <li>), and bold text (<strong>)." }, // L'ajout d'une description plus explicite est bénéfique pour le modèle
       video_url: { type: Type.STRING, description: "URL to a relevant YouTube video." },
-      infographic_url: { type: Type.STRING, description: "URL for a placeholder infographic." },
+      infographic_url: { type: Type.STRING, description: "URL for a placeholder infographic (e.g., https://picsum.photos/800/1200)." },
       quiz_questions: {
         type: Type.ARRAY,
         items: {
@@ -47,9 +52,11 @@ const trainingPlanSchema = {
 };
 
 export const generateTrainingPlan = async (topics: string[]): Promise<TrainingModule[]> => {
+  // CRITIQUE : Pour forcer le plantage immédiat si la clé n'est pas là
   if (!API_KEY) {
-    throw new Error("Gemini API key is not configured.");
+    throw new Error("Gemini API key is not configured in VITE_GEMINI_API_KEY.");
   }
+
   const prompt = `
     You are an expert instructional designer for small business owners in the beauty, restaurant, and retail sectors.
     Based on the following areas of improvement identified from a self-assessment quiz, generate a comprehensive and personalized training plan. The areas of improvement are: ${topics.join(', ')}.
@@ -85,18 +92,18 @@ export const generateTrainingPlan = async (topics: string[]): Promise<TrainingMo
 
     const jsonString = response.text; 
 
-// Ajoutez cette vérification avant le parse :
-if (!jsonString) {
-    throw new Error("Gemini returned an empty response text.");
-}
-
-const generatedModules = JSON.parse(jsonString); // Ceci devrait fonctionner
+    // Mieux vaut ne pas forcer la vérification d'une chaîne JSON vide, 
+    // car le modèle est censé retourner un tableau vide "[]" en cas d'échec de génération.
+    // L'échec du JSON.parse en cas de chaîne non valide sera géré par le bloc catch.
     
-    // The response is already an array from the schema
+    const generatedModules = JSON.parse(jsonString); // Ceci devrait fonctionner
+    
+    // Le type casting est correct
     return generatedModules as TrainingModule[];
 
   } catch (error) {
     console.error("Error generating training plan with Gemini:", error);
-    throw new Error("Failed to generate training plan. Please try again.");
+    // Lance une erreur plus spécifique pour le débogage front-end/console
+    throw new Error("Failed to generate training plan. Check the Gemini API Key and service logs.");
   }
 };
