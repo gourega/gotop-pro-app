@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run clean-dist && tsc && vite build",
-    ,"clean-dist": "rimraf dist",
+  
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
